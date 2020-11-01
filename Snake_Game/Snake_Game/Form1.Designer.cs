@@ -28,7 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.hadSnake = new System.Windows.Forms.PictureBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.hadSnake)).BeginInit();
             this.SuspendLayout();
             // 
@@ -58,6 +60,7 @@
         #endregion
 
         private System.Windows.Forms.PictureBox hadSnake;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 
