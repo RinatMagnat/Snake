@@ -20,6 +20,7 @@ namespace Snake_Game
         private int width = 800;
         private int sizeOfSnake = 40;
         private int score = 0;
+        private int step = 0;
         private Label lb;
         public Form1()
         {
@@ -33,10 +34,11 @@ namespace Snake_Game
             }
             _generateFruit();
             timer1.Tick += new EventHandler(_update);
-            timer1.Interval = 500;
+            timer1.Interval = 100;
             timer1.Start();
            
         }
+
         private void _createPanel() {
             Panel pn = new Panel();
             pn.Size = new Size(100, 900);
@@ -49,14 +51,29 @@ namespace Snake_Game
             this.Controls.Add(pn);
             pn.Controls.Add(lb);
         }
+
         private void _eatFruit() {
             PictureBox pb = new PictureBox();
             pb.Size = new Size(sizeOfSnake, sizeOfSnake);
-            pb.Location = new Point(this.picture[score-1].Location.X - 40*moveX, this.picture[score-1].Location.Y - 40+moveY);
+            pb.Location = new Point(this.picture[score-1].Location.X - 40 * moveX, this.picture[score-1].Location.Y - 40 * moveY);
             pb.BackColor = Color.Blue;
             picture[score] = pb;
             this.Controls.Add(picture[score]);
         }
+
+        private void _creashSnake() {
+            for (int i = 0; i < score; i++) {
+                if (picture[0].Location == picture[i].Location && i!=0) {
+                    //удаляем хвост змее
+                    for (int j = score; j>=i;j--){
+                        score = i-1;
+                        this.Controls.Remove(picture[j]);
+                    }
+                }
+            }
+            lb.Text = "Score " + this.score*step + ": ";
+        }
+
         private void _generateSnake() {
             picture = new PictureBox[200];
             picture[0] = new PictureBox();
@@ -71,7 +88,9 @@ namespace Snake_Game
                 picture[i].Location = picture[i - 1].Location;
             }
             picture[0].Location = new Point(picture[0].Location.X + (moveX * sizeOfSnake), picture[0].Location.Y + (moveY * sizeOfSnake));
+            _creashSnake();
         }
+
         private void _generateFruit() {
             this.fruit = new PictureBox();
             this.fruit.BackColor = Color.Yellow;
@@ -88,9 +107,14 @@ namespace Snake_Game
         }
 
         private void _update(object myObject,EventArgs eventArgs) {
-            //hadSnake.Location = new Point(hadSnake.Location.X + (moveX*sizeOfSnake), hadSnake.Location.Y+(moveY*sizeOfSnake));
+            _checkBorder();
             MoveSnake();
-            if (picture[0].Location == fruit.Location) { fruit.Dispose(); _generateFruit(); this.score++; _eatFruit(); lb.Text = "Score " + this.score + ": "; }
+            if (picture[0].Location == fruit.Location) { fruit.Dispose(); _generateFruit(); this.score++; this.step += 1; _eatFruit(); lb.Text = "Score " + this.score*step + ": ";
+                if (timer1.Interval > 50)
+                {
+                    timer1.Stop(); timer1.Interval -= 50; timer1.Start();
+                }
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -105,18 +129,34 @@ namespace Snake_Game
             pb.BackColor = Color.Black;
             pb.Size = s;
             this.Controls.Add(pb);
-        }     
+        }
+
+        private void _checkBorder() {
+            if (picture[0].Location.X < 0) {
+                picture[0].Location = new Point(760, picture[0].Location.Y);
+            }
+            if (picture[0].Location.Y > 760) {
+                picture[0].Location = new Point(picture[0].Location.X, 0);
+            }
+            if (picture[0].Location.X > 760) {
+                picture[0].Location = new Point(0, picture[0].Location.Y);
+            }
+            if (picture[0].Location.Y < 0) {
+                picture[0].Location = new Point(picture[0].Location.X,760);
+            }
+        }
+
         private void KeyCath(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode) {
-                case Keys.Left:  moveX = -1; moveY = 0;   break;
+                case Keys.Left: moveX = -1; moveY = 0; break;
                 case Keys.Right: moveX = 1; moveY = 0; break;
-                case Keys.Up:    moveY = -1;  moveX = 0; break;
-                case Keys.Down:  moveY = 1;  moveX = 0; break;               
-                default: /*"Нужно подумать еще чуток о реолизации"*/
-                         //MessageBox.Show(e.KeyCode.ToString());
-                break;
+                case Keys.Up: moveY = -1; moveX = 0; break;
+                case Keys.Down: moveY = 1; moveX = 0; break;
+                case Keys.Space: if (timer1.Enabled == true) { timer1.Stop(); } else { timer1.Start(); } break;
+                default: break;
             }
         }
+
     }
 }
