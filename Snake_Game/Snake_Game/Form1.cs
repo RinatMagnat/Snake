@@ -86,15 +86,23 @@ namespace Snake_Game
             LbDown.Text      = chDown + "  Down";
             pn.Controls.Add(LbDown);
 
+            Label LbStop = new Label();
+            LbStop.Location = new Point(20, 150);
+            LbStop.ForeColor = Color.Yellow;
+            LbStop.Font = new Font("Microsoft Sans Serif", 10F);
+            LbStop.Text = "Space Pause";
+            pn.Controls.Add(LbStop);
+
             Label LbHelp     = new Label();
-            LbHelp.Location  = new Point(20, 150);
+            LbHelp.Location  = new Point(20, 180);
             LbHelp.ForeColor = Color.Yellow;
             LbHelp.Font      = new Font("Microsoft Sans Serif", 12F);
-            LbHelp.Text      = " F1 " + "  Help";
+            LbHelp.Text      = " F1 " + "  Save";
             pn.Controls.Add(LbHelp);
 
+
             Label LbEsc      = new Label();
-            LbEsc.Location   = new Point(20, 180);
+            LbEsc.Location   = new Point(20, 210);
             LbEsc.ForeColor  = Color.Yellow;
             LbEsc.Font       = new Font("Microsoft Sans Serif", 12F);
             LbEsc.Text       = " Esc "+ " Close";
