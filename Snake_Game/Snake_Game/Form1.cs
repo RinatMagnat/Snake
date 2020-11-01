@@ -12,16 +12,20 @@ namespace Snake_Game
 {
     public partial class Form1 : Form
     {
-
+        private PictureBox[] picture;
         private PictureBox fruit;
         private int rI, rJ;
         private int moveX = 1, moveY = 0;
         private int heigth = 800;
         private int width = 800;
         private int sizeOfSnake = 40;
+        private int score = 0;
+        private Label lb;
         public Form1()
         {
             InitializeComponent();
+            _generateSnake();
+            _createPanel();
             this.KeyDown += new KeyEventHandler(KeyCath);
             for (int i = 0; i < width / sizeOfSnake; i++) {
               _generateMap(new Point(0,sizeOfSnake * i), new Size(width,1));
@@ -33,7 +37,41 @@ namespace Snake_Game
             timer1.Start();
            
         }
+        private void _createPanel() {
+            Panel pn = new Panel();
+            pn.Size = new Size(100, 900);
+            pn.Location = new Point(900-100,0);
+            pn.BackColor = Color.Blue;
+            lb = new Label();
+            lb.Location = new Point(20, 0);
+            lb.ForeColor = Color.Black;
+            lb.Text = "Score " + this.score+": ";            
+            this.Controls.Add(pn);
+            pn.Controls.Add(lb);
+        }
+        private void _eatFruit() {
+            PictureBox pb = new PictureBox();
+            pb.Size = new Size(sizeOfSnake, sizeOfSnake);
+            pb.Location = new Point(this.picture[score-1].Location.X - 40*moveX, this.picture[score-1].Location.Y - 40+moveY);
+            pb.BackColor = Color.Blue;
+            picture[score] = pb;
+            this.Controls.Add(picture[score]);
+        }
+        private void _generateSnake() {
+            picture = new PictureBox[200];
+            picture[0] = new PictureBox();
+            picture[0].BackColor = Color.Black;
+            picture[0].Location = new Point(0, 0);
+            picture[0].Size = new Size(sizeOfSnake, sizeOfSnake);
+            this.Controls.Add(picture[0]);
+        }
 
+        private void MoveSnake() {
+            for (int i = score; i >= 1; i--) {
+                picture[i].Location = picture[i - 1].Location;
+            }
+            picture[0].Location = new Point(picture[0].Location.X + (moveX * sizeOfSnake), picture[0].Location.Y + (moveY * sizeOfSnake));
+        }
         private void _generateFruit() {
             this.fruit = new PictureBox();
             this.fruit.BackColor = Color.Yellow;
@@ -50,7 +88,9 @@ namespace Snake_Game
         }
 
         private void _update(object myObject,EventArgs eventArgs) {
-          hadSnake.Location = new Point(hadSnake.Location.X + (moveX*sizeOfSnake), hadSnake.Location.Y+(moveY*sizeOfSnake));
+            //hadSnake.Location = new Point(hadSnake.Location.X + (moveX*sizeOfSnake), hadSnake.Location.Y+(moveY*sizeOfSnake));
+            MoveSnake();
+            if (picture[0].Location == fruit.Location) { fruit.Dispose(); _generateFruit(); this.score++; _eatFruit(); lb.Text = "Score " + this.score + ": "; }
         }
 
         private void Form1_Load(object sender, EventArgs e)
