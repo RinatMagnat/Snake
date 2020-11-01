@@ -212,12 +212,17 @@ namespace Snake_Game
                 case Keys.Right: moveX =  1;  moveY = 0; break;
                 case Keys.Up:    moveY = -1;  moveX = 0; break;
                 case Keys.Down:  moveY =  1;  moveX = 0; break;
-                case Keys.Space: if (timer1.Enabled == true) { timer1.Stop(); } else { timer1.Start(); } break; //запускаем и останавливаем таймер
+                case Keys.Space: if (timer1.Enabled == true) {  pictureBox1.Visible = true;  timer1.Stop(); } else { pictureBox1.Visible = false; timer1.Start(); } break; //запускаем и останавливаем таймер
                 case Keys.F1:
                     timer1.Stop();
-                    saveScoreAndRecords sv = new saveScoreAndRecords(score*step);                    
-                    if (sv.ShowDialog() == DialogResult.OK) {
+                    saveScoreAndRecords sv = new saveScoreAndRecords(score*step);
+                    if (sv.ShowDialog() == DialogResult.OK)
+                    {
+                        pictureBox1.Visible = false;
                         timer1.Start();
+                    }
+                    else {
+                        pictureBox1.Visible = true;
                     }
                     break;
                 case Keys.Escape: Close(); break;
